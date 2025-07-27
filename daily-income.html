@@ -1,0 +1,195 @@
+<!-- Bado ni sehemu ileile ya juu (HEAD na STYLES) kama ulivyotoa -->
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard ya Mwekezaji</title>
+  <style>
+    :root {
+      --bg-dark: #121212;
+      --bg-light: #f9f9f9;
+      --card-dark: #1e1e1e;
+      --card-light: #ffffff;
+      --text-dark: #ffffff;
+      --text-light: #121212;
+      --accent: #4ca1af;
+    }
+
+    body {
+      background: var(--bg-dark);
+      font-family: 'Segoe UI', sans-serif;
+      color: var(--text-dark);
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .toggle-theme {
+      background: var(--accent);
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .balance-box, .investments-container {
+      background: var(--card-dark);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: background 0.3s;
+    }
+
+    .balance-box h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .invest-card {
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      color: #fff;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+      transition: transform 0.3s;
+    }
+
+    .invest-card:hover {
+      transform: scale(1.02);
+    }
+
+    .invest-card h3 {
+      margin-top: 0;
+    }
+
+    .withdraw-btn {
+      margin-top: 10px;
+      background-color: #ff9800;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .withdraw-btn:disabled {
+      background-color: #888;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-theme" onclick="toggleTheme()">Badilisha Mandhari</button>
+
+  <div class="balance-box">
+    <h2>Karibu, <span id="userName"></span></h2>
+    <p>Namba: <span id="userPhone"></span></p>
+    <p>Salio: TZS <span id="userBalance">0.00</span></p>
+  </div>
+
+  <div class="investments-container" id="investmentsContainer">
+    <!-- Investment info will be displayed here -->
+  </div>
+
+  <script>
+    let isDark = true;
+    function toggleTheme() {
+      document.body.style.background = isDark ? 'var(--bg-light)' : 'var(--bg-dark)';
+      document.body.style.color = isDark ? 'var(--text-light)' : 'var(--text-dark)';
+      document.querySelectorAll('.balance-box, .investments-container').forEach(el => {
+        el.style.background = isDark ? 'var(--card-light)' : 'var(--card-dark)';
+      });
+      isDark = !isDark;
+    }
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const user = users.find(u => u.phone === currentUser.phone);
+
+    const userName = document.getElementById("userName");
+    const userPhone = document.getElementById("userPhone");
+    const userBalance = document.getElementById("userBalance");
+    const investmentsContainer = document.getElementById("investmentsContainer");
+
+    function updateUserBalanceUI() {
+      userBalance.textContent = parseFloat(user.deposit || 0).toLocaleString();
+    }
+
+    if (user) {
+      userName.textContent = user.name;
+      userPhone.textContent = user.phone;
+      updateUserBalanceUI();
+    }
+
+    const investments = JSON.parse(localStorage.getItem("investments")) || [];
+    const userInvestments = investments.filter(inv => inv.phone === currentUser.phone);
+
+    function calculateDaysPassed(startDate) {
+      const start = new Date(startDate);
+      const now = new Date();
+      const diff = now - start;
+      return Math.floor(diff / (1000 * 60 * 60 * 24));
+    }
+
+    function withdrawROI(index, amount) {
+      if (amount <= 0) return;
+
+      user.deposit = parseFloat(user.deposit || 0) + amount;
+      userInvestments[index].withdrawn = (userInvestments[index].withdrawn || 0) + amount;
+
+      localStorage.setItem("users", JSON.stringify(users));
+      localStorage.setItem("investments", JSON.stringify(investments));
+
+      updateUserBalanceUI();
+      displayInvestments();
+    }
+
+    function displayInvestments() {
+      if (userInvestments.length === 0) {
+        investmentsContainer.innerHTML = "<p style='color:#aaa;'>Hujafanya uwekezaji wowote bado.</p>";
+        return;
+      }
+
+      investmentsContainer.innerHTML = "";
+
+      userInvestments.forEach((inv, index) => {
+        const daysPassed = calculateDaysPassed(inv.date);
+        const effectiveDays = Math.min(daysPassed, inv.days);
+        const totalProfit = parseFloat(inv.totalIncome) - parseFloat(inv.amount);
+        const dailyProfit = totalProfit / inv.days;
+        const earnedProfit = dailyProfit * effectiveDays;
+        const withdrawn = inv.withdrawn || 0;
+        const withdrawable = earnedProfit - withdrawn;
+        const totalEarned = parseFloat(inv.amount) + earnedProfit;
+
+        const card = document.createElement("div");
+        card.className = "invest-card";
+        card.innerHTML = `
+          <h3>📈 Mpango: ${inv.plan}</h3>
+          <p>💰 Kiasi: TZS ${parseFloat(inv.amount).toLocaleString()}</p>
+          <p>📆 Uwekezaji: ${new Date(inv.date).toLocaleDateString()}</p>
+          <p>⏳ Siku: ${effectiveDays} / ${inv.days}</p>
+          <p>💹 ROI: ${(inv.roi * 100).toFixed(2)}%</p>
+          <p>📊 Mapato/Kila siku: TZS ${dailyProfit.toFixed(0)}</p>
+          <p>📥 Mapato hadi sasa: TZS ${earnedProfit.toFixed(0)}</p>
+          <p>✅ Tayari umetoa: TZS ${withdrawn.toFixed(0)}</p>
+          <p><strong>🧾 Jumla: TZS ${totalEarned.toFixed(0)}</strong></p>
+          <button class="withdraw-btn" onclick="withdrawROI(${index}, ${withdrawable.toFixed(0)})" ${withdrawable <= 0 ? 'disabled' : ''}>
+            Toa ROI: TZS ${withdrawable.toFixed(0)}
+          </button>
+        `;
+
+        investmentsContainer.appendChild(card);
+      });
+    }
+
+    displayInvestments();
+    setInterval(displayInvestments, 60000);
+  </script>
+</body>
+</html>

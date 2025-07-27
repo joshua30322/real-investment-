@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashibodi ya Mtumiaji - Referrals</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+    }
+    .header {
+      background: linear-gradient(135deg, #2196f3, #00bcd4);
+      color: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .referrals-list {
+      background: white;
+      border-radius: 12px;
+      padding: 15px;
+      max-width: 400px;
+      margin: 0 auto 20px auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .referrals-list h4 {
+      margin: 0 0 12px 0;
+      color: #007acc;
+      text-align: center;
+    }
+    .referrals-list ul {
+      list-style: none;
+      padding: 0;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+    .referrals-list li {
+      padding: 6px 10px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Karibu, <span id="userName">Mgeni</span></h1>
+  </div>
+
+  <div class="referrals-list">
+    <h4>Referrals Wako</h4>
+    <ul id="referralsList">
+      <li>Hakuna referrals bado.</li>
+    </ul>
+  </div>
+
+  <script>
+    // Tazama data ya mtumiaji aliyeingia
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (!currentUser) {
+      alert("Tafadhali ingia kwanza.");
+      window.location.href = "registration.html";
+    } else {
+      currentUser.referrals = currentUser.referrals || [];
+
+      // Onyesha jina
+      document.getElementById("userName").innerText = currentUser.name;
+
+      // Onyesha list ya referrals
+      const referralsList = document.getElementById("referralsList");
+      referralsList.innerHTML = "";
+      if (currentUser.referrals.length > 0) {
+        currentUser.referrals.forEach(refPhone => {
+          const userRef = users.find(u => u.phone === refPhone);
+          const displayName = userRef ? userRef.name : refPhone;
+          const li = document.createElement("li");
+          li.textContent = `${displayName} (${refPhone})`;
+          referralsList.appendChild(li);
+        });
+      } else {
+        referralsList.innerHTML = "<li>Hakuna referrals bado.</li>";
+      }
+    }
+  </script>
+
+</body>
+</html>

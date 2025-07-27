@@ -1,0 +1,207 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Aviator Casino Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    h1 {
+      margin-top: 20px;
+      font-size: 32px;
+      color: #ffcc00;
+      text-shadow: 1px 1px 4px #000;
+    }
+    .game-area {
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+      height: 350px;
+      background: radial-gradient(circle, #1a1a1a, #000000);
+      border: 2px solid #ffcc00;
+      border-radius: 15px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    .plane {
+      position: absolute;
+      width: 60px;
+      height: 30px;
+      background: url('https://img.icons8.com/ios-filled/50/ffffff/airplane-take-off.png') no-repeat center/contain;
+      top: 80%;
+      left: 10%;
+      transition: transform 0.2s;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    input[type="number"] {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      font-size: 18px;
+      width: 120px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      background: linear-gradient(to right, #ff416c, #ff4b2b);
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: linear-gradient(to right, #ff4b2b, #ff416c);
+    }
+    button:disabled {
+      background: #444;
+      cursor: not-allowed;
+    }
+    .info-box {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .multiplier {
+      font-size: 36px;
+      color: #00e676;
+    }
+    .countdown {
+      font-size: 20px;
+      color: #03a9f4;
+    }
+    .result {
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>  <h1>✨ Aviator Casino Game ✨</h1>  <div class="game-area">
+    <div class="plane" id="plane"></div>
+  </div>  <div class="info-box">
+    <div class="multiplier" id="multiplier">x1.00</div>
+    <div class="countdown" id="countdown">Next flight in: 5s</div>
+    <div class="result" id="result"></div>
+  </div>  <div class="controls">
+    <input type="number" id="betAmount" placeholder="Bet Amount" min="1" />
+    <button id="placeBetBtn">Place Bet</button>
+    <button id="cashOutBtn" disabled>Cash Out</button>
+  </div>  <script>
+    const plane = document.getElementById("plane");
+    const multiplierText = document.getElementById("multiplier");
+    const resultText = document.getElementById("result");
+    const countdownText = document.getElementById("countdown");
+
+    const betInput = document.getElementById("betAmount");
+    const placeBetBtn = document.getElementById("placeBetBtn");
+    const cashOutBtn = document.getElementById("cashOutBtn");
+
+    let multiplier = 1.0;
+    let interval;
+    let gameStarted = false;
+    let hasBet = false;
+    let hasCashedOut = false;
+    let countdown = 5;
+
+    function resetGame() {
+      multiplier = 1.0;
+      gameStarted = false;
+      hasCashedOut = false;
+      hasBet = false;
+      plane.style.left = "10%";
+      plane.style.top = "80%";
+      multiplierText.textContent = "x1.00";
+      resultText.textContent = "";
+      cashOutBtn.disabled = true;
+      placeBetBtn.disabled = false;
+      startCountdown();
+    }
+
+    function startCountdown() {
+      countdown = 5;
+      countdownText.textContent = `Next flight in: ${countdown}s`;
+      const timer = setInterval(() => {
+        countdown--;
+        countdownText.textContent = `Next flight in: ${countdown}s`;
+        if (countdown === 0) {
+          clearInterval(timer);
+          startFlight();
+        }
+      }, 1000);
+    }
+
+    function startFlight() {
+      gameStarted = true;
+      let left = 10;
+      let top = 80;
+
+      interval = setInterval(() => {
+        multiplier += 0.05;
+        multiplierText.textContent = `x${multiplier.toFixed(2)}`;
+
+        left += 1.5;
+        top -= 0.3;
+        plane.style.left = left + "%";
+        plane.style.top = top + "%";
+
+        if (multiplier >= Math.random() * 10 + 2) {
+          endFlight();
+        }
+      }, 100);
+    }
+
+    function endFlight() {
+      clearInterval(interval);
+      gameStarted = false;
+      if (hasBet && !hasCashedOut) {
+        resultText.textContent = "💥 You lost!";
+      }
+      setTimeout(resetGame, 3000);
+    }
+
+    placeBetBtn.addEventListener("click", () => {
+      const amount = parseFloat(betInput.value);
+      if (!amount || amount <= 0) {
+        alert("Enter a valid bet amount");
+        return;
+      }
+
+      hasBet = true;
+      placeBetBtn.disabled = true;
+      resultText.textContent = "🟢 Bet Placed";
+      cashOutBtn.disabled = false;
+    });
+
+    cashOutBtn.addEventListener("click", () => {
+      if (hasBet && !hasCashedOut && gameStarted) {
+        hasCashedOut = true;
+        resultText.textContent = `✅ You won: ${(parseFloat(betInput.value) * multiplier).toFixed(2)} units at x${multiplier.toFixed(2)}`;
+        cashOutBtn.disabled = true;
+        clearInterval(interval);
+        setTimeout(resetGame, 3000);
+      }
+    });
+
+    resetGame();
+  </script></body>
+</html>

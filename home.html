@@ -1,0 +1,252 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+  <meta charset="UTF-8" />  
+  <meta name="viewport" content="width=device-width, initial-scale=1" />  
+  <title>Real Investment</title>  
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />  
+  <style>  
+    body {  
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;  
+      background: linear-gradient(135deg, #007bff, #00d4ff);  
+      color: #fff;  
+      margin: 0; padding: 0;  
+      min-height: 100vh;  
+      display: flex;  
+      flex-direction: column;  
+    }  
+    .user-top {  
+      background: rgba(0, 0, 0, 0.2);  
+      padding: 0.5rem 2rem;  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+      font-size: 0.95rem;  
+      font-weight: 600;  
+    }  
+    header {  
+      background: rgba(0,0,0,0.2);  
+      padding: 1rem 2rem 0.5rem 2rem;  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);  
+      flex-wrap: wrap;  
+    }  
+    header h1 {  
+      font-weight: 700;  
+      font-size: 1.5rem;  
+      letter-spacing: 1px;  
+      margin: 0;  
+    }  
+    nav {  
+      display: flex;  
+      gap: 1rem;  
+    }  
+    nav div {  
+      text-align: center;  
+      cursor: pointer;  
+    }  
+    nav div:hover {  
+      opacity: 0.8;  
+    }  
+    nav i {  
+      font-size: 1.3rem;  
+    }  
+    .logout-icon {  
+      color: #28a745 !important;  
+    }  
+    main {  
+      flex-grow: 1;  
+      padding: 2rem;  
+      max-width: 900px;  
+      margin: auto;  
+    }  
+    .balance {  
+      font-size: 2rem;  
+      font-weight: 700;  
+      margin-bottom: 1rem;  
+      text-align: center;  
+      text-shadow: 0 2px 5px rgba(0,0,0,0.5);  
+    }  
+    .invested {  
+      text-align: center;  
+      font-size: 2rem;  
+      font-weight: 700;  
+      margin-bottom: 1rem;  
+    }  
+    .btn-primary {  
+      background: #28a745;  
+      padding: 0.75rem 1.5rem;  
+      border: none;  
+      border-radius: 25px;  
+      font-weight: 600;  
+      font-size: 1.1rem;  
+      cursor: pointer;  
+      box-shadow: 0 4px 12px rgba(40,167,69,0.6);  
+      transition: background 0.3s ease;  
+      display: inline-flex;  
+      align-items: center;  
+      gap: 0.5rem;  
+      color: white;  
+      margin: 0.5rem;  
+    }  
+    .btn-primary:hover {  
+      background: #218838;  
+    }  
+    .btn-warning {  
+      background:#ffc107;  
+      color:#000;  
+    }  
+    .btn-warning:hover {  
+      background: #e0a800;  
+    }  
+    .features {  
+      display: flex;  
+      justify-content: space-around;  
+      margin-top: 2rem;  
+      flex-wrap: wrap;  
+      gap: 1rem;  
+    }  
+    .feature-card {  
+      background: rgba(255, 255, 255, 0.1);  
+      padding: 1.5rem;  
+      border-radius: 15px;  
+      flex: 1 1 250px;  
+      box-shadow: 0 0 10px rgba(255,255,255,0.15);  
+      text-align: center;  
+      transition: transform 0.3s ease;  
+      cursor: pointer;  
+    }  
+    .feature-card:hover {  
+      transform: translateY(-10px);  
+      box-shadow: 0 10px 20px rgba(255,255,255,0.3);  
+    }  
+    .feature-card i {  
+      font-size: 3rem;  
+      margin-bottom: 0.5rem;  
+      color: #ffc107;  
+    }  
+    footer {  
+      background: rgba(0,0,0,0.25);  
+      padding: 1rem;  
+      text-align: center;  
+      font-size: 0.9rem;  
+      color: #ddd;  
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.3);  
+    }  
+  </style>  
+</head>  
+<body>  
+  
+  <!-- User Info Top -->  
+  <div class="user-top">  
+    <span id="userName">Name: N/A</span>  
+    <span id="userPhone">Phone: N/A</span>  
+  </div>  
+  
+  <!-- Header & Navigation -->  
+  <header>  
+    <h1><i class="fa-solid fa-dice"></i> Real Investment</h1>  
+    <nav>  
+      <div onclick="window.location.href='invite.html'">  
+        <i class="fa-solid fa-user-plus"></i><br />  
+        <span>Invite</span>  
+      </div>  
+      <div onclick="window.location.href='user.html'">  
+        <i class="fa-solid fa-user"></i><br />  
+        <span>User</span>  
+      </div>  
+      <div onclick="window.location.href='football.html'">  
+        <i class="fa-solid fa-futbol"></i><br />  
+        <span>Football</span>  
+      </div>  
+      <div onclick="window.location.href='casino.html'">  
+        <i class="fa-solid fa-dice"></i><br />  
+        <span>Casino</span>  
+      </div>  
+      <div onclick="logoutUser()" style="color: #4caf50;">  
+        <i class="fa-solid fa-right-from-bracket"></i><br />  
+        <span>Logout</span>  
+      </div>  
+    </nav>  
+  </header>  
+  
+  <!-- Main Body -->  
+  <main>  
+    <div class="invested">Invested: TZS 0.00</div>
+    <div class="balance">Balance: TZS 0.00</div>  
+
+    <div style="text-align:center;">  
+      <button class="btn-primary" onclick="window.location.href='recharge.html'">  
+        <i class="fa-solid fa-wallet"></i> Recharge  
+      </button>  
+      <button class="btn-primary btn-warning" onclick="window.location.href='withdraw.html'">  
+        <i class="fa-solid fa-money-bill-wave"></i> Withdraw  
+      </button>  
+    </div>  
+  
+    <section class="features">  
+      <div class="feature-card" onclick="window.location.href='invite.html'">  
+        <i class="fa-solid fa-user-plus"></i>  
+        <h3>Invite Friends</h3>  
+        <p>Send invitations and earn referral bonuses.</p>  
+      </div>  
+      <div class="feature-card" onclick="goToInvest()">  
+        <i class="fa-solid fa-coins"></i>  
+        <h3>Investment Plans</h3>  
+        <p>Choose plans with high returns and secure investments.</p>  
+      </div>  
+      <div class="feature-card" onclick="window.location.href='account-settings.html'">  
+        <i class="fa-solid fa-user-cog"></i>  
+        <h3>Account Settings</h3>  
+        <p>Manage your profile and update your information.</p>  
+      </div>  
+      <div class="feature-card" onclick="window.location.href='support.html'">  
+        <i class="fa-solid fa-headset"></i>  
+        <h3>Help & Support</h3>  
+        <p>Contact support or read FAQs for assistance.</p>  
+      </div>  
+    </section>  
+  </main>  
+  
+  <!-- Footer -->  
+  <footer>  
+    &copy; 2025 Real Investment. All rights reserved.  
+  </footer>  
+  
+  <!-- JS Scripts -->  
+  <script>  
+    function goToInvest() {  
+      window.location.href = "invest.html";  
+    }  
+  
+    function logoutUser() {  
+      localStorage.removeItem("currentUser");  
+      alert("Logged out successfully!");  
+      window.location.href = "login.html";  
+    }  
+  
+    window.onload = function () {  
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));  
+      if (!currentUser) {  
+        alert("Please log in first.");  
+        window.location.href = "index.html";  
+        return;  
+      }  
+  
+      document.getElementById('userName').innerText = "Name: " + (currentUser.name || 'N/A');  
+      document.getElementById('userPhone').innerText = "Phone: " + (currentUser.phone || 'N/A');  
+  
+      const users = JSON.parse(localStorage.getItem('users')) || [];  
+      const userData = users.find(u => u.phone === currentUser.phone);  
+  
+      const balanceValue = userData && typeof userData.deposit === 'number' ? userData.deposit : 0;  
+      const investedValue = userData && typeof userData.invested === 'number' ? userData.invested : 0;  
+  
+      document.querySelector('.invested').innerText = `Invested: TZS ${investedValue.toLocaleString()}.00`;  
+      document.querySelector('.balance').innerText = `Balance: TZS ${balanceValue.toLocaleString()}.00`;  
+    }  
+  </script>  
+</body>  
+</html>

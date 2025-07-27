@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8">
+  <title>Historia ya Deposit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f7fa;
+      padding: 20px;
+    }
+    h2 {
+      color: #2c3e50;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #3498db;
+      color: white;
+    }
+    .pending {
+      color: orange;
+      font-weight: bold;
+    }
+    .approved {
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Historia ya Deposit</h2>
+  <p><strong>Jina:</strong> <span id="name"></span></p>
+  <p><strong>Namba ya Simu:</strong> <span id="phone"></span></p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Kiasi</th>
+        <th>Muda</th>
+        <th>Chanzo</th>
+        <th>Hali</th>
+      </tr>
+    </thead>
+    <tbody id="depositHistoryBody">
+      <!-- Deposit data here -->
+    </tbody>
+  </table>
+
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")) || {};
+    const tbody = document.getElementById("depositHistoryBody");
+
+    document.getElementById("name").textContent = currentUser.name || "Sijulikani";
+    document.getElementById("phone").textContent = currentUser.phone || "Sijulikani";
+
+    // 1. Kutoka depositHistory (admin panel ya kwanza) — status assumed Approved
+    const deposits1 = JSON.parse(localStorage.getItem("depositHistory")) || [];
+    const userDeposits1 = deposits1
+      .filter(d => d.phone === currentUser.phone)
+      .map(d => ({
+        amount: d.amount,
+        time: d.time,
+        source: "Admin Panel 1",
+        status: "Approved"
+      }));
+
+    // 2. Kutoka paymentConfirmations (admin panel ya pili)
+    const confirmations = JSON.parse(localStorage.getItem("paymentConfirmations")) || [];
+    const userDeposits2 = confirmations
+      .filter(d => d.phoneNumber === currentUser.phone)
+      .map(d => ({
+        amount: d.amount,
+        time: d.timestamp,
+        source: "Admin Panel 2",
+        status: d.status || "Pending"
+      }));
+
+    // 3. Unganisha zote
+    const combinedDeposits = [...userDeposits1, ...userDeposits2];
+
+    if (combinedDeposits.length === 0) {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td colspan="4">Hakuna historia ya deposit.</td>`;
+      tbody.appendChild(row);
+    } else {
+      combinedDeposits.forEach(deposit => {
+        const statusClass = deposit.status === "Approved" ? "approved" : (deposit.status === "Pending" ? "pending" : "");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>TZS ${Number(deposit.amount).toLocaleString()}</td>
+          <td>${deposit.time}</td>
+          <td>${deposit.source}</td>
+          <td class="${statusClass}">${deposit.status}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+  </script>
+</body>
+</html>

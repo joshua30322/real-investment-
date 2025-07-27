@@ -1,0 +1,144 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Slot Machine</title>
+  <style>
+    body {
+      background: radial-gradient(circle at center, #1b1b1b, #000);
+      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }h1 {
+  margin-bottom: 20px;
+  font-size: 2em;
+}
+
+.slot-machine {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  background: #222;
+  padding: 20px;
+  border: 5px solid gold;
+  border-radius: 15px;
+  box-shadow: 0 0 20px gold;
+  margin-bottom: 20px;
+}
+
+.reel {
+  background: #111;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2em;
+  font-weight: bold;
+  color: gold;
+  transition: transform 0.3s ease;
+}
+
+.controls {
+  text-align: center;
+}
+
+input[type="number"] {
+  padding: 10px;
+  font-size: 1em;
+  width: 120px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  background: gold;
+  color: #000;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background: orange;
+}
+
+.result {
+  font-size: 1.2em;
+  margin-top: 10px;
+}
+
+  </style>
+</head>
+<body>
+  <h1>🎰 Slot Machine</h1>  <div class="slot-machine">
+    <div class="reel" id="reel1">🍒</div>
+    <div class="reel" id="reel2">🍋</div>
+    <div class="reel" id="reel3">🍊</div>
+  </div>  <div class="controls">
+    <input type="number" id="betAmount" placeholder="Weka kiasi..." min="1" />
+    <br>
+    <button onclick="spinSlots()">Spin</button>
+    <div class="result" id="resultText"></div>
+  </div>  <script>
+    const symbols = ['🍒', '🍋', '🍊', '🍇', '🍉', '⭐', '💎'];
+
+    function getRandomSymbol() {
+      return symbols[Math.floor(Math.random() * symbols.length)];
+    }
+
+    function animateReel(reelElement, finalSymbol, delay) {
+      let counter = 0;
+      const spinInterval = setInterval(() => {
+        reelElement.textContent = getRandomSymbol();
+        reelElement.style.transform = `translateY(${Math.random() * 10}px)`;
+        counter++;
+        if (counter >= 15) {
+          clearInterval(spinInterval);
+          reelElement.textContent = finalSymbol;
+          reelElement.style.transform = 'translateY(0)';
+        }
+      }, delay);
+    }
+
+    function spinSlots() {
+      const bet = parseInt(document.getElementById('betAmount').value);
+      const result = document.getElementById('resultText');
+
+      if (!bet || bet <= 0) {
+        result.textContent = '⚠️ Tafadhali weka kiasi sahihi cha bet.';
+        return;
+      }
+
+      const r1 = getRandomSymbol();
+      const r2 = getRandomSymbol();
+      const r3 = getRandomSymbol();
+
+      animateReel(document.getElementById('reel1'), r1, 100);
+      animateReel(document.getElementById('reel2'), r2, 150);
+      animateReel(document.getElementById('reel3'), r3, 200);
+
+      setTimeout(() => {
+        if (r1 === r2 && r2 === r3) {
+          result.textContent = `🎉 Jackpot! Umeshinda mara 5 ya bet yako: ${bet * 5} `;
+        } else if (r1 === r2 || r2 === r3 || r1 === r3) {
+          result.textContent = `✅ Umeshinda mara 2 ya bet yako: ${bet * 2}`;
+        } else {
+          result.textContent = `❌ Pole! Umepoteza ${bet}`;
+        }
+      }, 2500);
+    }
+  </script></body>
+</html>

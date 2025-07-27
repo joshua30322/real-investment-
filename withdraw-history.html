@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Withdraw History</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef2f3;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    table {
+      width: 100%;
+      max-width: 800px;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+    th {
+      background: #2196f3;
+      color: white;
+    }
+    .status-pending { color: orange; font-weight: bold; }
+    .status-approved { color: green; font-weight: bold; }
+    .status-rejected { color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <h2>Historia ya Maombi ya Kutoa Pesa</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Jina</th>
+        <th>Namba</th>
+        <th>Kiasi (TZS)</th>
+        <th>Status</th>
+        <th>Muda</th>
+      </tr>
+    </thead>
+    <tbody id="historyTableBody"></tbody>
+  </table>
+
+  <script>
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const withdrawals = JSON.parse(localStorage.getItem("withdrawals")) || [];
+
+    if (!currentUser) {
+      alert("Tafadhali ingia kwanza.");
+      window.location.href = "index.html";
+    }
+
+    const tbody = document.getElementById("historyTableBody");
+
+    const userWithdrawals = withdrawals.filter(w => w.phone === currentUser.phone);
+
+    if (userWithdrawals.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5">Hakuna historia ya kutoa pesa.</td></tr>`;
+    } else {
+      userWithdrawals.reverse().forEach(w => {
+        const row = `
+          <tr>
+            <td>${w.name}</td>
+            <td>${w.phone}</td>
+            <td>${w.amount.toLocaleString()}</td>
+            <td class="status-${w.status}">${w.status.toUpperCase()}</td>
+            <td>${w.time}</td>
+          </tr>
+        `;
+        tbody.innerHTML += row;
+      });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Withdraw Request</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    form {
+      background: white;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: #2196f3;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .message {
+      margin-top: 15px;
+      background: #e0f7fa;
+      padding: 10px;
+      border-left: 5px solid #00796b;
+      display: none;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Withdraw Request</h2>
+
+  <form id="withdrawForm" onsubmit="event.preventDefault(); processWithdraw();">
+    <label for="account">Account (Phone Number):</label>
+    <input type="tel" id="account" placeholder="07xxxxxxxx" required />
+
+    <label for="amount">Amount (TZS):</label>
+    <input type="number" id="amount" placeholder="1000 tsh minimum" required min="1000" />
+
+    <label for="pin">PIN / Password:</label>
+    <input type="password" id="pin" placeholder="Enter PIN" required />
+
+    <button type="submit">Submit Withdraw</button>
+  </form>
+
+  <div class="message" id="messageBox"></div>
+
+  <script>
+    // Pata current user na users data
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let withdrawals = JSON.parse(localStorage.getItem("withdrawals")) || [];
+
+    if (!currentUser) {
+      alert("Tafadhali ingia kwanza.");
+      window.location.href = "index.html";
+    }
+
+    // Set initial account input na disable kuhariri (mtumiaji hawezi kuomba kwa namba ya mtu mwingine)
+    document.getElementById("account").value = currentUser.phone;
+    document.getElementById("account").disabled = true;
+
+    // Ongeza PIN verification kama unahitaji, hapa ni mfano rahisi (PIN ni 1234)
+    const correctPIN = "1234";
+
+    function processWithdraw() {
+      const amount = parseInt(document.getElementById("amount").value.trim());
+      const pin = document.getElementById("pin").value.trim();
+      const messageBox = document.getElementById("messageBox");
+
+      // Validate inputs
+      if (!amount || amount < 10000) {
+        alert("Tafadhali ingiza kiasi halali (chini ya 10000 hauruhusiwi).");
+        return;
+      }
+
+      if (pin !== correctPIN) {
+        alert("PIN sio sahihi.");
+        return;
+      }
+
+      // Tafuta user profile kutoka users array
+      let userIndex = users.findIndex(u => u.phone === currentUser.phone);
+      if (userIndex < 0) {
+        alert("Mtumiaji haipatikani.");
+        return;
+      }
+
+      if ((users[userIndex].deposit || 0) < amount) {
+        alert("Salio halitoshi.");
+        return;
+      }
+
+      // Tengeneza withdraw request mpya
+      const newRequest = {
+        phone: currentUser.phone,
+        name: currentUser.name,
+        amount: amount,
+        status: "pending",
+        time: new Date().toLocaleString()
+      };
+
+      withdrawals.push(newRequest);
+
+      // Hifadhi withdrawals mpya
+      localStorage.setItem("withdrawals", JSON.stringify(withdrawals));
+
+      messageBox.style.display = "block";
+      messageBox.innerHTML = `✅ Ombi lako la kutoa TZS <b>${amount.toLocaleString()}</b> limepokelewa.<br>
+        Tafadhali subiri uthibitisho wa admin.<br><br>
+        <i>Imetumwa saa ${newRequest.time}</i>`;
+
+      // Reset form except account
+      document.getElementById("amount").value = "";
+      document.getElementById("pin").value = "";
+    }
+  </script>
+
+</body>
+</html>

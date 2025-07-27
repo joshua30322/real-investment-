@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lipia kwa Airtel Money</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #ff0000; /* rangi nyekundu ya Airtel */
+    }
+
+    .payment-container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .instructions {
+      background-color: #ffe6e6;
+      padding: 10px;
+      border-left: 4px solid #ff0000;
+      margin-bottom: 20px;
+    }
+
+    .success {
+      color: green;
+      text-align: center;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Lipia kwa Airtel Money</h2>
+
+  <div class="payment-container">
+    <div class="instructions">
+      <p><strong>Maelekezo ya Malipo:</strong></p>
+      <p>Nenda kwenye Airtel Money kisha chagua "Lipa Biashara".</p>
+      <p><strong>Namba ya Kampuni:</strong> 789012</p>
+      <p><strong>Akaunti:</strong> Namba yako ya simu</p>
+    </div>
+
+    <label>Namba yako ya simu</label>
+    <input type="text" id="phone" placeholder="07XXXXXXXX" />
+
+    <label>Kiasi (Tsh)</label>
+    <input type="number" id="amount" placeholder="Ingiza kiasi..." />
+
+    <label>Namba uliyotumia kulipia</label>
+    <input type="text" id="paymentPhone" placeholder="07XXXXXXXX" />
+
+    <label>Ujumbe wa Uthibitisho</label>
+    <input type="text" id="confirmationText" placeholder="Mfano: AM12345 Confirmed..." />
+
+    <button onclick="confirmPayment()">Tuma Uthibitisho</button>
+
+    <p class="success" id="successMessage"></p>
+  </div>
+
+  <script>
+    function confirmPayment() {
+      const phone = document.getElementById("phone").value.trim();
+      const amount = parseFloat(document.getElementById("amount").value);
+      const paymentPhone = document.getElementById("paymentPhone").value.trim();
+      const confirmationText = document.getElementById("confirmationText").value.trim();
+      const method = "Airtel Money";
+
+      if (!phone || isNaN(amount) || !paymentPhone || !confirmationText) {
+        alert("Tafadhali jaza taarifa zote kikamilifu.");
+        return;
+      }
+
+      const confirmation = {
+        name: getUserNameByPhone(phone),
+        phoneNumber: phone,
+        amount: amount,
+        paymentPhone: paymentPhone,
+        confirmationText: confirmationText,
+        method: method,
+        timestamp: new Date().toLocaleString(),
+        status: "Pending"
+      };
+
+      let confirmations = JSON.parse(localStorage.getItem("paymentConfirmations")) || [];
+      confirmations.push(confirmation);
+      localStorage.setItem("paymentConfirmations", JSON.stringify(confirmations));
+
+      document.getElementById("successMessage").textContent = "Uthibitisho umetumwa kwa mafanikio!";
+      setTimeout(() => {
+        document.getElementById("successMessage").textContent = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("amount").value = "";
+        document.getElementById("paymentPhone").value = "";
+        document.getElementById("confirmationText").value = "";
+      }, 3000);
+    }
+
+    function getUserNameByPhone(phone) {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const user = users.find(u => u.phone === phone);
+      return user ? user.name : "Mtumiaji";
+    }
+  </script>
+
+</body>
+</html>

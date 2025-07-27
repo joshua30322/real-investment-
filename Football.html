@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Modern Football Betting</title>
+<style>
+  /* Reset & base */
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  header {
+    width: 100%;
+    background: #1f1f1f;
+    padding: 15px 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  header h1 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+
+  .balance {
+    background: #333;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    color: #8bc34a;
+  }
+
+  main {
+    max-width: 900px;
+    width: 100%;
+    padding: 20px;
+    flex-grow: 1;
+  }
+
+  .match-card {
+    background: #1f1f1f;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    padding: 15px 20px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.8);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .teams {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex: 2 1 300px;
+  }
+
+  .team {
+    flex: 1 1 120px;
+    text-align: center;
+  }
+
+  .team-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .vs {
+    font-weight: 600;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .match-info {
+    flex: 1 1 120px;
+    font-size: 0.9rem;
+    color: #bbb;
+    text-align: center;
+  }
+
+  .bet-section {
+    flex: 1 1 250px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  select, input[type="number"] {
+    padding: 8px 10px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+  }
+
+  select {
+    background: #2c2c2c;
+    color: #eee;
+  }
+
+  input[type="number"] {
+    width: 100%;
+  }
+
+  button.bet-btn {
+    background: #8bc34a;
+    border: none;
+    padding: 10px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #121212;
+    transition: background 0.3s ease;
+  }
+
+  button.bet-btn:disabled {
+    background: #555;
+    cursor: not-allowed;
+  }
+
+  button.bet-btn:hover:not(:disabled) {
+    background: #a4d049;
+  }
+
+  .result-message {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    min-height: 22px;
+  }
+
+  /* Betting history */
+  .history {
+    max-width: 900px;
+    width: 100%;
+    background: #1f1f1f;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.8);
+    margin-bottom: 40px;
+  }
+
+  .history h2 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: #8bc34a;
+  }
+
+  .history-list {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+
+  .history-item {
+    border-bottom: 1px solid #444;
+    padding: 8px 0;
+    font-size: 0.95rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 720px) {
+    .match-card {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+    }
+
+    .teams, .bet-section {
+      flex: 1 1 100%;
+    }
+
+    .match-info {
+      text-align: left;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Football Betting Game ⚽ </h1>
+  <div class="balance" id="balanceDisplay">Salio: Tsh 0</div>
+</header>
+
+<main id="matchesContainer">
+  <!-- Matches will be dynamically loaded here -->
+</main>
+
+<section class="history" id="betHistorySection" style="display:none;">
+  <h2>Historia ya Beti</h2>
+  <div class="history-list" id="betHistoryList"></div>
+</section>
+
+<script>
+  // Initial balance setup
+  if(!localStorage.getItem('balance')) {
+    localStorage.setItem('balance', '10000');
+  }
+
+  // Example football matches data (could come from API)
+  const matches = [
+    {
+      id: 1,
+      teamA: 'Simba SC',
+      teamB: 'Young Africans',
+      time: 'Kesho 3:00 PM',
+      odds: {
+        teamA: 2.1,
+        draw: 3.5,
+        teamB: 2.8
+      }
+    },
+    {
+      id: 2,
+      teamA: 'Manchester United',
+      teamB: 'Liverpool',
+      time: 'Leo 9:00 PM',
+      odds: {
+        teamA: 2.4,
+        draw: 3.2,
+        teamB: 2.5
+      }
+    },
+    {
+      id: 3,
+      teamA: 'Barcelona',
+      teamB: 'Real Madrid',
+      time: 'Kesho 7:00 PM',
+      odds: {
+        teamA: 2.6,
+        draw: 3.0,
+        teamB: 2.6
+      }
+    },
+    {
+      id: 4,
+      teamA: 'Chelsea',
+      teamB: 'Arsenal',
+      time: 'Kesho 10:00 AM',
+      odds: {
+        teamA: 2.8,
+        draw: 3.1,
+        teamB: 2.4
+      }
+    }
+  ];
+
+  const balanceDisplay = document.getElementById('balanceDisplay');
+  const matchesContainer = document.getElementById('matchesContainer');
+  const betHistorySection = document.getElementById('betHistorySection');
+  const betHistoryList = document.getElementById('betHistoryList');
+
+  function updateBalance() {
+    const bal = parseInt(localStorage.getItem('balance')) || 0;
+    balanceDisplay.textContent = `Salio: Tsh ${bal.toLocaleString()}`;
+  }
+
+  function loadMatches() {
+    matchesContainer.innerHTML = '';
+    matches.forEach(match => {
+      const matchDiv = document.createElement('div');
+      matchDiv.classList.add('match-card');
+      matchDiv.dataset.id = match.id;
+
+      matchDiv.innerHTML = `
+        <div class="teams">
+          <div class="team">${match.teamA}</div>
+          <div class="vs">VS</div>
+          <div class="team">${match.teamB}</div>
+        </div>
+        <div class="match-info">${match.time}</div>
+        <div class="bet-section">
+          <select class="bet-choice">
+            <option value="">Chagua Matokeo</option>
+            <option value="teamA">Ushindi wa ${match.teamA} (${match.odds.teamA})</option>
+            <option value="draw">Sare (${match.odds.draw})</option>
+            <option value="teamB">Ushindi wa ${match.teamB} (${match.odds.teamB})</option>
+          </select>
+          <input type="number" class="bet-amount" placeholder="Kiasi (Tsh)" min="1" />
+          <button class="bet-btn">Weka Beti</button>
+          <div class="result-message"></div>
+        </div>
+      `;
+
+      matchesContainer.appendChild(matchDiv);
+
+      // Add event listener for bet button
+      const betBtn = matchDiv.querySelector('.bet-btn');
+      betBtn.addEventListener('click', () => placeBet(match.id));
+    });
+  }
+
+  // Get bet history from localStorage
+  function getBetHistory() {
+    return JSON.parse(localStorage.getItem('betHistory') || '[]');
+  }
+
+  // Save bet history to localStorage
+  function saveBetHistory(history) {
+    localStorage.setItem('betHistory', JSON.stringify(history));
+  }
+
+  function addBetToHistory(bet) {
+    const history = getBetHistory();
+    history.unshift(bet); // add to start
+    if(history.length > 20) history.pop(); // keep last 20 bets
+    saveBetHistory(history);
+    renderBetHistory();
+  }
+
+  function renderBetHistory() {
+    const history = getBetHistory();
+    if(history.length === 0) {
+      betHistorySection.style.display = 'none';
+      return;
+    }
+    betHistorySection.style.display = 'block';
+
+    betHistoryList.innerHTML = '';
+    history.forEach(bet => {
+      const div = document.createElement('div');
+      div.classList.add('history-item');
+      div.textContent = `${bet.date} | ${bet.match} | Kubeti: ${bet.choice} | Kiasi: Tsh ${bet.amount.toLocaleString()} | Matokeo: ${bet.result} | Tuzo: Tsh ${bet.payout.toLocaleString()}`;
+      betHistoryList.appendChild(div);
+    });
+  }
+
+  function placeBet(matchId) {
+    const matchDiv = [...matchesContainer.children].find(div => parseInt(div.dataset.id) === matchId);
+    if (!matchDiv) return;
+
+    const betChoiceSelect = matchDiv.querySelector('.bet-choice');
+    const betAmountInput = matchDiv.querySelector('.bet-amount');
+    const resultMessage = matchDiv.querySelector('.result-message');
+
+    const betChoice = betChoiceSelect.value;
+    const betAmount = parseInt(betAmountInput.value);
+    let balance = parseInt(localStorage.getItem('balance')) || 0;
+
+    if (!betChoice) {
+      resultMessage.textContent = '⚠️ Tafadhali chagua matokeo ya kubeti';
+      return;
+    }
+
+    if (isNaN(betAmount) || betAmount <= 0) {
+      resultMessage.textContent = '⚠️ Tafadhali weka kiasi halali cha kubeti';
+      return;
+    }
+
+    if (betAmount > balance) {
+      resultMessage.textContent = '❌ Kiasi cha kubeti kinazidi salio lako';
+      return;
+    }
+
+    // Deduct bet immediately
+    balance -= betAmount;
+    localStorage.setItem('balance', balance);
+    updateBalance();
+
+    resultMessage.textContent = 'Mchezo unaendelea... Subiri matokeo';
+
+    // Simulate match result after 3 seconds
+    setTimeout(() => {
+      const match = matches.find(m => m.id === matchId);
+      if(!match) return;
+
+      // Simulate actual result randomly based on odds weighting
+      // For demo, simple equal chance:
+      const possibleResults = ['teamA', 'draw', 'teamB'];
+      const actualResult = possibleResults[Math.floor(Math.random() * possibleResults.length)];
+
+      let payout = 0;
+      let message = '';
+      let won = false;
+
+      if (betChoice === actualResult) {
+        // payout = betAmount * odds for the chosen outcome
+        let odds = 1;
+        if (actualResult === 'teamA') odds = match.odds.teamA;
+        else if (actualResult === 'draw') odds = match.odds.draw;
+        else if (actualResult === 'teamB') odds = match.odds.teamB;
+
+        payout = betAmount * odds;
+        balance += payout;
+        localStorage.setItem('balance', balance);
+        updateBalance();
+        won = true;
+        message = `🎉 Hongera! Matokeo yalikuwa: ${displayResult(actualResult, match)}. Umeshinda Tsh ${payout.toLocaleString()}`;
+      } else {
+        message = `❌ Pole! Matokeo yalikuwa: ${displayResult(actualResult, match)}. Umefanya hasara Tsh ${betAmount.toLocaleString()}`;
+      }
+
+      resultMessage.textContent = message;
+
+      // Save bet to history
+      addBetToHistory({
+        date: new Date().toLocaleString(),
+        match: `${match.teamA} vs ${match.teamB}`,
+        choice: displayResult(betChoice, match),
+        amount: betAmount,
+        result: displayResult(actualResult, match),
+        payout: won ? payout : 0
+      });
+
+    }, 3000);
+  }
+
+  function displayResult(code, match) {
+    if(!match) {
+      // fallback labels
+      if(code === 'teamA') return 'Ushindi wa Timu A';
+      if(code === 'teamB') return 'Ushindi wa Timu B';
+      if(code === 'draw') return 'Sare';
+      return '';
+    }
+    switch(code) {
+      case 'teamA': return `Ushindi wa ${match.teamA}`;
+      case 'teamB': return `Ushindi wa ${match.teamB}`;
+      case 'draw': return 'Sare';
+      default: return '';
+    }
+  }
+
+  // On page load
+  updateBalance();
+  loadMatches();
+  renderBetHistory();
+
+</script>
+
+</body>
+</html>

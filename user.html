@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dashibodi ya Mtumiaji</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #2196f3, #00bcd4);
+    }
+    .header {
+      background: white;
+      color: #2196f3;
+      padding: 30px;
+      text-align: center;
+      border-bottom-left-radius: 20px;
+      border-bottom-right-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .header p {
+      margin: 5px 0;
+      font-size: 16px;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .card:hover {
+      transform: scale(1.02);
+    }
+    .card i {
+      font-size: 30px;
+      color: #00bcd4;
+    }
+    .card h2 {
+      font-size: 16px;
+      margin-top: 10px;
+      color: #333;
+    }
+    .card p {
+      font-size: 14px;
+      font-weight: bold;
+      margin: 5px 0 0;
+    }
+    .back-btn {
+      display: block;
+      margin: 30px auto 40px;
+      background: white;
+      color: #007acc;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 30px;
+      font-size: 15px;
+      cursor: pointer;
+      max-width: 220px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .back-btn:hover {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Karibu, <span id="userName">Mgeni</span></h1>
+    <p>Simu: <span id="userPhone">000000000</span></p>
+  </div>
+
+  <div class="dashboard">
+    <div class="card">
+      <i class="fas fa-wallet"></i>
+      <h2>My Balance</h2>
+      <p id="userBalance">TZS 0.00</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='deposit-history.html'">
+      <i class="fas fa-arrow-down"></i>
+      <h2>Deposit History</h2>
+      <p>Bonyeza kuona taarifa</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='withdraw-history.html'">
+      <i class="fas fa-arrow-up"></i>
+      <h2>Withdraw History</h2>
+      <p>Bonyeza kuona taarifa</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='daily-income.html'">
+      <i class="fas fa-hand-holding-usd"></i>
+      <h2>Daily income(ROI)</h2>
+      <p>Bonyeza kuona taarifa</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='team.html'">
+      <i class="fas fa-users"></i>
+      <h2>My Team</h2>
+    </div>
+
+    <div class="card" onclick="window.location.href='referral-history.html'">
+      <i class="fas fa-gift"></i>
+      <h2>Referral Commission</h2>
+      <p>Bonyeza kuona historia</p>
+    </div>
+  </div>
+
+  <a class="back-btn" href="home.html"><i class="fas fa-arrow-left"></i> Rudi Nyumbani</a>
+
+  <script>
+    window.onload = function () {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      if (!currentUser) {
+        alert("Tafadhali ingia kwanza.");
+        window.location.href = "registration.html";
+        return;
+      }
+
+      document.getElementById("userName").innerText = currentUser.name || 'Hakuna';
+      document.getElementById("userPhone").innerText = currentUser.phone || 'Hakuna';
+
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const userData = users.find(u => u.phone === currentUser.phone);
+      const balance = userData && typeof userData.deposit === 'number' ? userData.deposit : 0;
+
+      document.getElementById("userBalance").innerText = "TZS " + balance.toLocaleString() + ".00";
+    }
+  </script>
+</body>
+</html>
