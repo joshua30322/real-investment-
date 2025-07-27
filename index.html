@@ -1,40 +1,357 @@
 <!DOCTYPE html>
-<html lang="sw">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Web App Yangu</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Lucky Wheel - Login / Sign Up</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* (CSS yako haijabadilika kabisa) */
+    /* Reset & basics */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    .container {
+      background: #fff;
+      max-width: 400px;
+      width: 100%;
+      border-radius: 20px;
+      padding: 40px 35px 35px 35px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Language selector */
+    .language-select {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      z-index: 10;
+    }
+    select {
+      border: 1.5px solid #43cea2;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: #fff;
+      color: #185a9d;
+      transition: all 0.3s ease;
+    }
+    select:hover, select:focus {
+      border-color: #185a9d;
+      outline: none;
+    }
+
+    /* Promo Banner */
+    #promoBanner {
+      background: #43cea2;
+      background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
+      color: #fff;
+      border-radius: 15px;
+      padding: 20px 25px;
+      text-align: center;
+      margin-bottom: 30px;
+      box-shadow: 0 6px 15px rgba(67, 206, 162, 0.6);
+      user-select: none;
+    }
+    #promoBanner .title {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    #promoBanner .title i {
+      animation: bounce 2s infinite ease-in-out;
+    }
+    #promoBanner .subtitle {
+      font-size: 15px;
+      font-weight: 500;
+      opacity: 0.9;
+      line-height: 1.4;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* Heading */
+    h2 {
+      text-align: center;
+      color: #185a9d;
+      margin-bottom: 25px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* Inputs */
+    .input-group {
+      margin-bottom: 20px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      border-radius: 12px;
+      border: 1.8px solid #43cea2;
+      transition: border-color 0.3s ease;
+      font-weight: 500;
+      color: #185a9d;
+    }
+    .input-group input::placeholder {
+      color: #98d8c6;
+    }
+    .input-group input:focus {
+      border-color: #185a9d;
+      outline: none;
+      box-shadow: 0 0 8px rgba(24, 90, 157, 0.4);
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      background: #185a9d;
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      padding: 15px 0;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(24, 90, 157, 0.5);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn:hover {
+      background: #43cea2;
+      color: #185a9d;
+      box-shadow: 0 7px 20px rgba(67, 206, 162, 0.7);
+    }
+
+    /* Toggle text */
+    .toggle {
+      margin-top: 22px;
+      font-size: 14px;
+      text-align: center;
+      color: #185a9d;
+      cursor: pointer;
+      font-weight: 600;
+      user-select: none;
+      text-decoration: underline;
+    }
+
+    /* Hide name & referral initially */
+    .hidden {
+      display: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 460px) {
+      .container {
+        padding: 30px 25px 25px 25px;
+      }
+      #promoBanner {
+        font-size: 14px;
+      }
+      #promoBanner .title {
+        font-size: 18px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Karibu kwenye Mfumo wa Web App</h1>
-  <p>Chagua ukurasa hapa chini:</p>
+  <div class="container">
+    <!-- Language selector -->
+    <div class="language-select">
+      <select id="language" onchange="setLanguage(this.value)">
+        <option value="sw">🇹🇿 Kiswahili</option>
+        <option value="en">🇬🇧 English</option>
+      </select>
+    </div>
 
-  <ul>
-    <li><a href="signup.html">Signup</a></li>
-    <li><a href="home.html">Home</a></li>
-    <li><a href="mpesa.html">M-Pesa</a></li>
-    <li><a href="tigopesa.html">Tigo Pesa</a></li>
-    <li><a href="airtelmoney.html">Airtel Money</a></li>
-    <li><a href="halopesa.html">Halo Pesa</a></li>
-    <li><a href="usdt.html">USDT</a></li>
-    <li><a href="invest.html">Invest</a></li>
-    <li><a href="invite.html">Invite</a></li>
-    <li><a href="support.html">Support</a></li>
-    <li><a href="Recharge.html">Recharge</a></li>
-    <li><a href="Withdraw.html">Withdraw</a></li>
-    <li><a href="Withdraw-history.html">Withdraw History</a></li>
-    <li><a href="deposit-history.html">Deposit History</a></li>
-    <li><a href="team.html">Team</a></li>
-    <li><a href="User.html">User</a></li>
-    <li><a href="Daily-income.html">Daily Income</a></li>
-    <li><a href="referral-history.html">Referral History</a></li>
-    <li><a href="Roullete.html">Roulette</a></li>
-    <li><a href="Aviator.html">Aviator</a></li>
-    <li><a href="Slot.html">Slot</a></li>
-    <li><a href="Casino.html">Casino</a></li>
-    <li><a href="Admin-panel.html">Admin Panel</a></li>
-    <li><a href="Admin-deposit.html">Admin Deposit</a></li>
-    <li><a href="Account-settings.html">Account Settings</a></li>
-  </ul>
+    <!-- Promo banner -->
+    <div id="promoBanner">
+      <div class="title">
+        <i class="fas fa-coins"></i>
+        Real Investment |
+        <i class="fas fa-chart-line"></i>
+        Safe Passive Income
+        <i class="fas fa-smile"></i>
+        <i class="fas fa-spinner"></i>
+      </div>
+      <div class="subtitle" id="promoSubtitle">
+        Pata faida kila siku ukiwa umelala. Jisajili sasa na anza safari yako ya maendeleo!
+      </div>
+    </div>
 
+    <!-- Form heading -->
+    <h2 id="form-title">Login</h2>
+
+    <!-- Form -->
+    <form id="loginForm">
+      <div class="input-group hidden" id="nameField">
+        <input type="text" id="fullname" placeholder="Jina Kamili" autocomplete="name" />
+      </div>
+      <div class="input-group hidden" id="referralField">
+        <input type="text" id="referralPhone" placeholder="Namba ya Simu ya Aliyekualika (optional)" autocomplete="tel" />
+      </div>
+      <div class="input-group">
+        <input type="text" id="phone" placeholder="Namba ya Simu" autocomplete="tel" required />
+      </div>
+      <div class="input-group">
+        <input type="password" id="password" placeholder="Nenosiri" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="btn" id="submitBtn">Ingia</button>
+    </form>
+
+    <div class="toggle" onclick="toggleForm()">Hauna akaunti? Jisajili hapa</div>
+  </div>
+
+  <script>
+    let isSignUp = false;
+    let currentLang = 'sw';
+
+    const strings = {
+      sw: {
+        pitch: "Karibu kwenye Real Investment! Jipatie nafasi ya kuwekeza na kushinda zawadi za bonasi papo hapo.",
+        promoSubtitle: "Pata faida kila siku ukiwa umelala. Jisajili sasa na anza safari yako ya maendeleo!",
+        login: "Ingia",
+        signup: "Jisajili",
+        fullName: "Jina Kamili",
+        referralPhone: "Namba ya Simu ya Aliyekualika (optional)",
+        phone: "Namba ya Simu",
+        password: "Nenosiri",
+        toggleToSignup: "Hauna akaunti? Jisajili hapa",
+        toggleToLogin: "Tayari una akaunti? Ingia hapa",
+        signupSuccess: "Umejisajili kwa mafanikio!",
+        loginSuccess: "Umeingia kwa mafanikio!",
+        loginFail: "Namba au nenosiri si sahihi!",
+        phoneExists: "Namba hii ya simu tayari imetumika.",
+        enterName: "Tafadhali jaza jina lako kamili."
+      },
+      en: {
+        pitch: "Welcome to Real Investment! Join the real platform where every deposit brings new opportunities.",
+        promoSubtitle: "Earn while you sleep. Register now and start your journey to success!",
+        login: "Login",
+        signup: "Sign Up",
+        fullName: "Full Name",
+        referralPhone: "Referrer's Phone Number (optional)",
+        phone: "Phone Number",
+        password: "Password",
+        toggleToSignup: "Don't have an account? Sign up here",
+        toggleToLogin: "Already have an account? Login here",
+        signupSuccess: "Signed up successfully!",
+        loginSuccess: "Logged in successfully!",
+        loginFail: "Invalid phone or password!",
+        phoneExists: "This phone number is already registered.",
+        enterName: "Please enter your full name."
+      }
+    };
+
+    function updateTexts() {
+      const lang = strings[currentLang];
+      document.getElementById("form-title").innerText = isSignUp ? lang.signup : lang.login;
+      document.getElementById("submitBtn").innerText = isSignUp ? lang.signup : lang.login;
+      document.getElementById("fullname").placeholder = lang.fullName;
+      document.getElementById("referralPhone").placeholder = lang.referralPhone;
+      document.getElementById("phone").placeholder = lang.phone;
+      document.getElementById("password").placeholder = lang.password;
+      document.querySelector(".toggle").innerText = isSignUp ? lang.toggleToLogin : lang.toggleToSignup;
+      document.getElementById("promoSubtitle").innerText = lang.promoSubtitle;
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      updateTexts();
+    }
+
+    function toggleForm() {
+      isSignUp = !isSignUp;
+      document.getElementById("nameField").classList.toggle("hidden");
+      document.getElementById("referralField").classList.toggle("hidden");
+      updateTexts();
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const name = document.getElementById("fullname").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const pass = document.getElementById("password").value.trim();
+      const referralPhone = document.getElementById("referralPhone").value.trim();
+
+      if (isSignUp) {
+        if (!name) {
+          alert(strings[currentLang].enterName);
+          return;
+        }
+
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+
+        const exists = users.some(u => u.phone === phone);
+        if (exists) {
+          alert(strings[currentLang].phoneExists);
+          return;
+        }
+
+        const newUser = {
+          name,
+          phone,
+          pass,
+          deposit: 0,
+          referralCommission: 0,
+          referrals: [],
+          referredBy: referralPhone || null
+        };
+
+        // Update referral if valid
+        if (referralPhone) {
+          const referrer = users.find(u => u.phone === referralPhone);
+          if (referrer) {
+            referrer.referrals = referrer.referrals || [];
+            if (!referrer.referrals.includes(phone)) {
+              referrer.referrals.push(phone);
+            }
+          }
+        }
+
+        users.push(newUser);
+        localStorage.setItem("users", JSON.stringify(users));
+        alert(strings[currentLang].signupSuccess);
+        toggleForm();
+
+      } else {
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        const foundUser = users.find(u => u.phone === phone && u.pass === pass);
+
+        if (foundUser) {
+          alert(strings[currentLang].loginSuccess);
+          localStorage.setItem("currentUser", JSON.stringify(foundUser));
+          window.location.href = "home.html";
+        } else {
+          alert(strings[currentLang].loginFail);
+        }
+      }
+    });
+
+    window.onload = () => {
+      updateTexts();
+      document.getElementById("language").value = currentLang;
+    };
+  </script>
 </body>
 </html>
