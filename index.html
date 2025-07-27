@@ -351,6 +351,13 @@
     window.onload = () => {
       updateTexts();
       document.getElementById("language").value = currentLang;
+
+      // Hii inasoma 'ref' parameter kutoka URL na kuiweka kwenye referralPhone input
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get("ref");
+      if (ref) {
+        document.getElementById("referralPhone").value = ref;
+      }
     };
   </script>
 </body>
