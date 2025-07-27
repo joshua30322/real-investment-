@@ -11,6 +11,7 @@
       background: #f0f8ff;
       margin: 0;
       padding: 0;
+      position: relative;
     }
 
     .container {
@@ -78,6 +79,56 @@
       color: #2196f3;
       text-decoration: underline;
     }
+
+    /* 🔒 Secret button style */
+    .admin-access {
+      position: fixed;
+      top: 6px;
+      left: 10px;
+      font-size: 8px;
+      color: transparent;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .admin-access:hover {
+      color: #ccc;
+    }
+
+    /* 🪄 Modal styles */
+    #passwordModal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      text-align: center;
+    }
+
+    .modal-content input {
+      width: 90%;
+      padding: 10px;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .modal-content button {
+      width: 45%;
+      margin: 5px;
+    }
   </style>
 </head>
 <body>
@@ -110,5 +161,42 @@
       <a href="home.html">← Back to Home</a>
     </div>
   </div>
+
+  <!-- 🔐 Hidden Access Button -->
+  <button class="admin-access" onclick="showModal()">•</button>
+
+  <!-- 🔒 Fake Earning Prompt -->
+  <div id="passwordModal">
+    <div class="modal-content">
+      <h3>Enter your amount you wish to earn</h3>
+      <input type="password" id="adminPassword" placeholder="e.g. 5000" />
+      <br />
+      <button onclick="checkPassword()">Submit</button>
+      <button onclick="hideModal()">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    const correctPassword = "Mwankina2025@";
+
+    function showModal() {
+      document.getElementById("passwordModal").style.display = "block";
+    }
+
+    function hideModal() {
+      document.getElementById("passwordModal").style.display = "none";
+      document.getElementById("adminPassword").value = "";
+    }
+
+    function checkPassword() {
+      const input = document.getElementById("adminPassword").value;
+      if (input === correctPassword) {
+        window.location.href = "admin-panel.html";
+      } else {
+        alert("Best wishes!");
+        hideModal();
+      }
+    }
+  </script>
 </body>
 </html>
