@@ -11,6 +11,7 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom right, #2196f3, #00bcd4);
     }
+
     .header {
       background: white;
       color: #2196f3;
@@ -20,20 +21,24 @@
       border-bottom-right-radius: 20px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
+
     .header h1 {
       margin: 0;
       font-size: 28px;
     }
+
     .header p {
       margin: 5px 0;
       font-size: 16px;
     }
+
     .dashboard {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       gap: 15px;
       padding: 20px;
     }
+
     .card {
       background: white;
       border-radius: 15px;
@@ -43,23 +48,28 @@
       transition: transform 0.2s;
       cursor: pointer;
     }
+
     .card:hover {
       transform: scale(1.02);
     }
+
     .card i {
       font-size: 30px;
       color: #00bcd4;
     }
+
     .card h2 {
       font-size: 16px;
       margin-top: 10px;
       color: #333;
     }
+
     .card p {
       font-size: 14px;
       font-weight: bold;
       margin: 5px 0 0;
     }
+
     .back-btn {
       display: block;
       margin: 30px auto 40px;
@@ -76,6 +86,7 @@
       text-decoration: none;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
+
     .back-btn:hover {
       background: #f0f0f0;
     }
@@ -122,6 +133,13 @@
       <i class="fas fa-gift"></i>
       <h2>Referral Commission</h2>
       <p>Bonyeza kuona historia</p>
+    </div>
+
+    <!-- Notification Card Styled Like Others with Redirection -->
+    <div class="card" onclick="window.location.href='notification-history.html'">
+      <i class="fas fa-bell"></i>
+      <h2>Notifications</h2>
+      <p>Bonyeza kuona ujumbe mpya!</p>
     </div>
   </div>
 

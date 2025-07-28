@@ -9,6 +9,7 @@
     * {
       box-sizing: border-box;
     }
+
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
@@ -20,6 +21,7 @@
       color: #f9fafb;
       padding: 20px;
     }
+
     .container {
       background: rgba(31, 41, 55, 0.95);
       max-width: 480px;
@@ -29,6 +31,7 @@
       box-shadow: 0 12px 30px rgba(0,0,0,0.6);
       text-align: center;
     }
+
     h2 {
       font-weight: 700;
       font-size: 1.8rem;
@@ -36,6 +39,7 @@
       color: #38bdf8;
       text-shadow: 0 0 8px #0ea5e9;
     }
+
     p.description {
       margin-bottom: 30px;
       font-weight: 500;
@@ -43,6 +47,7 @@
       color: #e2e8f0;
       line-height: 1.5;
     }
+
     input#referralLink {
       width: 100%;
       padding: 14px 20px;
@@ -56,12 +61,14 @@
       transition: background-color 0.3s ease;
       cursor: pointer;
     }
+
     input#referralLink:focus {
       outline: none;
       background: #475569;
       box-shadow: 0 0 12px #38bdf8;
       color: #f8fafc;
     }
+
     button.copyBtn {
       margin-top: 20px;
       background: #0ea5e9;
@@ -75,10 +82,12 @@
       box-shadow: 0 6px 15px rgba(14,165,233,0.5);
       transition: background-color 0.3s ease, box-shadow 0.3s ease;
     }
+
     button.copyBtn:hover {
       background: #0284c7;
       box-shadow: 0 8px 25px rgba(2,132,199,0.6);
     }
+
     .copyMsg {
       margin-top: 15px;
       font-weight: 600;
@@ -87,9 +96,11 @@
       transition: opacity 0.4s ease;
       user-select: none;
     }
+
     .copyMsg.visible {
       opacity: 1;
     }
+
     @media (max-width: 520px) {
       .container {
         padding: 25px 20px;
@@ -108,26 +119,37 @@
   <div class="container" role="main" aria-label="Referral link section">
     <h2>Referral Link Yako</h2>
     <p class="description">Shirikisha link hii kwa marafiki zako ili wawekeze na wewe upate commission.</p>
-    <input type="text" id="referralLink" readonly aria-readonly="true" aria-label="Referral link" title="Bonyeza hapa kunakili link" onclick="this.select()" />
+    <input
+      type="text"
+      id="referralLink"
+      readonly
+      aria-readonly="true"
+      aria-label="Referral link"
+      title="Bonyeza hapa kunakili link"
+      onclick="this.select()"
+    />
     <button class="copyBtn" onclick="copyLink()">Nakili Link</button>
     <p id="copyMsg" class="copyMsg">Link imenakiliwa kikamilifu!</p>
   </div>
 
   <script>
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
     if (!currentUser) {
       alert("Tafadhali ingia kwanza.");
-      window.location.href = "signup.html";
+      window.location.href = "registration.html";
     } else {
-      const baseUrl = window.location.origin + "/signup.html";
+      const baseUrl = window.location.origin + "/registration.html";
       const referralLink = `${baseUrl}?ref=${encodeURIComponent(currentUser.phone)}`;
-      document.getElementById("referralLink").value = referralLink;
+      const input = document.getElementById("referralLink");
+      input.value = referralLink;
     }
 
     function copyLink() {
       const input = document.getElementById("referralLink");
       input.select();
       input.setSelectionRange(0, 99999);
+
       navigator.clipboard.writeText(input.value).then(() => {
         const msg = document.getElementById("copyMsg");
         msg.classList.add("visible");

@@ -6,7 +6,8 @@
   <title>Lucky Wheel - Login / Sign Up</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* CSS kama ulivyo toa hapo awali */
+    /* (CSS yako haijabadilika kabisa) */
+    /* Reset & basics */
     * {
       box-sizing: border-box;
     }
@@ -20,6 +21,7 @@
       min-height: 100vh;
       color: #333;
     }
+
     .container {
       background: #fff;
       max-width: 400px;
@@ -30,6 +32,8 @@
       position: relative;
       overflow: hidden;
     }
+
+    /* Language selector */
     .language-select {
       position: absolute;
       top: 15px;
@@ -50,7 +54,10 @@
       border-color: #185a9d;
       outline: none;
     }
+
+    /* Promo Banner */
     #promoBanner {
+      background: #43cea2;
       background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
       color: #fff;
       border-radius: 15px;
@@ -78,10 +85,13 @@
       opacity: 0.9;
       line-height: 1.4;
     }
+
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-8px); }
     }
+
+    /* Heading */
     h2 {
       text-align: center;
       color: #185a9d;
@@ -89,6 +99,8 @@
       font-weight: 700;
       letter-spacing: 0.05em;
     }
+
+    /* Inputs */
     .input-group {
       margin-bottom: 20px;
     }
@@ -110,6 +122,8 @@
       outline: none;
       box-shadow: 0 0 8px rgba(24, 90, 157, 0.4);
     }
+
+    /* Button */
     .btn {
       width: 100%;
       background: #185a9d;
@@ -128,6 +142,8 @@
       color: #185a9d;
       box-shadow: 0 7px 20px rgba(67, 206, 162, 0.7);
     }
+
+    /* Toggle text */
     .toggle {
       margin-top: 22px;
       font-size: 14px;
@@ -138,9 +154,13 @@
       user-select: none;
       text-decoration: underline;
     }
+
+    /* Hide name & referral initially */
     .hidden {
       display: none;
     }
+
+    /* Responsive */
     @media (max-width: 460px) {
       .container {
         padding: 30px 25px 25px 25px;
@@ -156,6 +176,7 @@
 </head>
 <body>
   <div class="container">
+    <!-- Language selector -->
     <div class="language-select">
       <select id="language" onchange="setLanguage(this.value)">
         <option value="sw">🇹🇿 Kiswahili</option>
@@ -163,6 +184,7 @@
       </select>
     </div>
 
+    <!-- Promo banner -->
     <div id="promoBanner">
       <div class="title">
         <i class="fas fa-coins"></i>
@@ -177,8 +199,10 @@
       </div>
     </div>
 
+    <!-- Form heading -->
     <h2 id="form-title">Login</h2>
 
+    <!-- Form -->
     <form id="loginForm">
       <div class="input-group hidden" id="nameField">
         <input type="text" id="fullname" placeholder="Jina Kamili" autocomplete="name" />
@@ -260,11 +284,6 @@
       isSignUp = !isSignUp;
       document.getElementById("nameField").classList.toggle("hidden");
       document.getElementById("referralField").classList.toggle("hidden");
-
-      if (isSignUp && window.referralFromURL) {
-        document.getElementById("referralPhone").value = window.referralFromURL;
-      }
-
       updateTexts();
     }
 
@@ -299,6 +318,7 @@
           referredBy: referralPhone || null
         };
 
+        // Update referral if valid
         if (referralPhone) {
           const referrer = users.find(u => u.phone === referralPhone);
           if (referrer) {
@@ -331,17 +351,6 @@
     window.onload = () => {
       updateTexts();
       document.getElementById("language").value = currentLang;
-
-      // Pata referral number kutoka URL param
-      const params = new URLSearchParams(window.location.search);
-      const ref = params.get("ref");
-      if (ref) {
-        window.referralFromURL = ref;
-
-        // Kama unaonyesha signup moja kwa moja, weka hapa, vinginevyo hakikisha toggle inabofya
-        // Kama unataka signup ionekane moja kwa moja ikiwa kuna ref:
-        // toggleForm(); 
-      }
     };
   </script>
 </body>
