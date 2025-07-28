@@ -3,141 +3,285 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Referral Link - Lucky Wheel</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <title>Real Investment - Home</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #007bff, #00d4ff);
+      color: #fff;
+      margin: 0; padding: 0;
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      height: 100vh;
-      color: #f9fafb;
       padding: 20px;
     }
-    .container {
-      background: rgba(31, 41, 55, 0.95);
-      max-width: 480px;
+    .user-info {
       width: 100%;
-      border-radius: 18px;
-      padding: 35px 40px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-      text-align: center;
-    }
-    h2 {
-      font-weight: 700;
-      font-size: 1.8rem;
-      margin-bottom: 0.7rem;
-      color: #38bdf8;
-      text-shadow: 0 0 8px #0ea5e9;
-    }
-    p.description {
-      margin-bottom: 30px;
-      font-weight: 500;
-      font-size: 1rem;
-      color: #e2e8f0;
-      line-height: 1.5;
-    }
-    input#referralLink {
-      width: 100%;
-      padding: 14px 20px;
-      font-size: 1rem;
-      border-radius: 12px;
-      border: none;
-      background: #334155;
-      color: #e2e8f0;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.4);
-      user-select: all;
-      transition: background-color 0.3s ease;
-      cursor: pointer;
-    }
-    input#referralLink:focus {
-      outline: none;
-      background: #475569;
-      box-shadow: 0 0 12px #38bdf8;
-      color: #f8fafc;
-    }
-    button.copyBtn {
-      margin-top: 20px;
-      background: #0ea5e9;
-      color: white;
+      max-width: 900px;
+      background: rgba(0,0,0,0.3);
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
       font-weight: 600;
       font-size: 1.1rem;
-      padding: 14px 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+    .balance, .invested {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+      background: rgba(0,0,0,0.3);
+      padding: 1rem 0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+    .plans-container {
+      max-width: 900px;
+      width: 100%;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      margin-bottom: 40px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2rem;
+      text-shadow: 0 0 10px rgba(24, 90, 157, 0.8);
+      color: #fff;
+    }
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .level-card {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 8px 18px rgba(30, 60, 114, 0.8);
+      color: #fff;
+    }
+    .level-header {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .level-info {
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+    input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
       border: none;
-      border-radius: 14px;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+    .btn-invest {
+      background: #43cea2;
+      border: none;
+      padding: 10px;
+      font-weight: bold;
+      border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 6px 15px rgba(14,165,233,0.5);
-      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      width: 100%;
+      font-size: 1rem;
+      color: #fff;
+      transition: background 0.3s ease;
     }
-    button.copyBtn:hover {
-      background: #0284c7;
-      box-shadow: 0 8px 25px rgba(2,132,199,0.6);
+    .btn-invest:hover {
+      background: #2a7c62;
     }
-    .copyMsg {
-      margin-top: 15px;
+    .message-box {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto 20px;
+      padding: 15px;
+      background: #00796b;
+      color: #d0f0f0;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 121, 107, 0.8);
+      display: none;
       font-weight: 600;
-      color: #34d399;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      user-select: none;
-    }
-    .copyMsg.visible {
-      opacity: 1;
-    }
-    @media (max-width: 520px) {
-      .container {
-        padding: 25px 20px;
-      }
-      h2 {
-        font-size: 1.5rem;
-      }
-      button.copyBtn {
-        font-size: 1rem;
-        padding: 12px 24px;
-      }
+      text-align: center;
+      white-space: pre-line;
     }
   </style>
 </head>
 <body>
-  <div class="container" role="main" aria-label="Referral link section">
-    <h2>Referral Link Yako</h2>
-    <p class="description">Shirikisha link hii kwa marafiki zako ili wawekeze na wewe upate commission.</p>
-    <input type="text" id="referralLink" readonly aria-readonly="true" aria-label="Referral link" title="Bonyeza hapa kunakili link" onclick="this.select()" />
-    <button class="copyBtn" onclick="copyLink()">Nakili Link</button>
-    <p id="copyMsg" class="copyMsg">Link imenakiliwa kikamilifu!</p>
+
+  <div class="user-info">
+    <div id="userName">Name: N/A</div>
+    <div id="userPhone">Phone: N/A</div>
   </div>
 
-  <script>
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  <div class="balance" id="balanceDisplay">Balance: TZS 0.00</div>
+  <div class="invested" id="investedDisplay">Invested: TZS 0.00</div>
+
+  <div class="message-box" id="messageBox"></div>
+
+  <div class="plans-container">
+    <h1>Chagua Mpango wa Uwekezaji</h1>
+    <div class="levels-grid" id="levels-container"></div>
+  </div>
+
+<script>
+  const plans = [
+    { level: 1, name: "Bronze", min: 15000, max: 30000, roi: 1.0, days: 90 },
+    { level: 2, name: "Silver", min: 50000, max: 100000, roi: 1.25, days: 120 },
+    { level: 3, name: "Gold", min: 200000, max: 400000, roi: 1.5, days: 150 },
+    { level: 4, name: "Emerald", min: 500000, max: 800000, roi: 1.75, days: 180 },
+    { level: 5, name: "Sapphire", min: 1000000, max: 1500000, roi: 2.0, days: 210 },
+    { level: 6, name: "Diamond", min: 2000000, max: 4000000, roi: 2.25, days: 240 },
+    { level: 7, name: "Ruby", min: 5000000, max: 8000000, roi: 2.5, days: 270 },
+    { level: 8, name: "Titanium", min: 10000000, max: 15000000, roi: 2.75, days: 300 },
+    { level: 9, name: "Platinum", min: 20000000, max: 30000000, roi: 3.0, days: 330 },
+    { level: 10, name: "Elite VIP", min: 50000000, max: 100000000, roi: 3.5, days: 365 }
+  ];
+
+  const container = document.getElementById("levels-container");
+  const balanceDisplay = document.getElementById("balanceDisplay");
+  const investedDisplay = document.getElementById("investedDisplay");
+  const messageBox = document.getElementById("messageBox");
+  const userNameEl = document.getElementById("userName");
+  const userPhoneEl = document.getElementById("userPhone");
+
+  let currentUser = null;
+  let userBalance = 0;
+  let userInvested = 0;
+  let users = [];
+  let userData = null;
+
+  window.onload = () => {
+    currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if (!currentUser) {
       alert("Tafadhali ingia kwanza.");
-      window.location.href = "signup.html";
-    } else {
-      const baseUrl = window.location.origin + "/signup.html";
-      const referralLink = `${baseUrl}?ref=${encodeURIComponent(currentUser.phone)}`;
-      document.getElementById("referralLink").value = referralLink;
+      window.location.href = "login.html";
+      return;
     }
 
-    function copyLink() {
-      const input = document.getElementById("referralLink");
-      input.select();
-      input.setSelectionRange(0, 99999);
-      navigator.clipboard.writeText(input.value).then(() => {
-        const msg = document.getElementById("copyMsg");
-        msg.classList.add("visible");
-        setTimeout(() => {
-          msg.classList.remove("visible");
-        }, 2500);
-      }).catch(() => {
-        alert("Kosa: Imeshindikana kunakili link.");
-      });
+    userNameEl.textContent = `Name: ${currentUser.name || 'N/A'}`;
+    userPhoneEl.textContent = `Phone: ${currentUser.phone || 'N/A'}`;
+
+    users = JSON.parse(localStorage.getItem("users")) || [];
+    userData = users.find(u => u.phone === currentUser.phone);
+
+    userBalance = userData && typeof userData.deposit === 'number' ? userData.deposit : 0;
+    userInvested = userData && typeof userData.invested === 'number' ? userData.invested : 0;
+
+    updateBalanceDisplay();
+    renderPlans();
+  };
+
+  function updateBalanceDisplay() {
+    balanceDisplay.textContent = `Balance: TZS ${userBalance.toLocaleString()}.00`;
+    investedDisplay.textContent = `Invested: TZS ${userInvested.toLocaleString()}.00`;
+  }
+
+  function renderPlans() {
+    container.innerHTML = "";
+    plans.forEach((plan, i) => {
+      const card = document.createElement("div");
+      card.className = "level-card";
+      card.innerHTML = `
+        <div class="level-header">${plan.name} (Level ${plan.level}) - TZS ${plan.min.toLocaleString()} - ${plan.max.toLocaleString()}</div>
+        <div class="level-info">Mapato: <strong>${(plan.roi * 100).toFixed(2)}%</strong> baada ya siku ${plan.days}</div>
+        <label>Weka kiasi:</label>
+        <input type="number" id="amount${i}" placeholder="Kiasi..." min="${plan.min}" max="${plan.max}" oninput="calculateIncome(this.value, ${plan.roi}, ${plan.days}, 'daily${i}', 'total${i}')" />
+        <p>Daily Income: <span id="daily${i}">-</span></p>
+        <p>Total Income: <span id="total${i}">-</span></p>
+        <button class="btn-invest" onclick="investNow(${i})">Invest Now</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function calculateIncome(amount, roi, days, dailyId, totalId) {
+    amount = parseFloat(amount);
+    if (!amount || amount <= 0) {
+      document.getElementById(dailyId).textContent = '-';
+      document.getElementById(totalId).textContent = '-';
+      return;
     }
-  </script>
+    const total = amount + (amount * roi);
+    const daily = (total - amount) / days;
+    document.getElementById(dailyId).textContent = "TZS " + daily.toFixed(0);
+    document.getElementById(totalId).textContent = "TZS " + total.toFixed(0);
+  }
+
+  function investNow(index) {
+    const amountInput = document.getElementById(`amount${index}`);
+    const amount = parseFloat(amountInput.value);
+    const plan = plans[index];
+
+    if (isNaN(amount) || amount < plan.min || amount > plan.max) {
+      alert(`Tafadhali weka kiasi sahihi kati ya TZS ${plan.min.toLocaleString()} - ${plan.max.toLocaleString()}`);
+      return;
+    }
+
+    if (amount > userBalance) {
+      alert("Salio halitoshi. Tafadhali ongeza fedha kwenye akaunti yako.");
+      return;
+    }
+
+    // Punguza salio (deposit)
+    userBalance -= amount;
+    userData.deposit = userBalance;
+
+    // Ongeza kwenye invested
+    if (typeof userData.invested !== 'number') {
+      userData.invested = 0;
+    }
+    userData.invested += amount;
+    userInvested = userData.invested;
+
+    // Update users array na localStorage
+    users = users.map(u => u.phone === currentUser.phone ? userData : u);
+    localStorage.setItem("users", JSON.stringify(users));
+
+    // Update currentUser localStorage (optional)
+    localStorage.setItem("currentUser", JSON.stringify({...currentUser, invested: userInvested}));
+
+    // Ongeza record kwenye investments
+    let investments = JSON.parse(localStorage.getItem("investments")) || [];
+    investments.push({
+      phone: currentUser.phone,
+      name: currentUser.name,
+      amount: amount,
+      plan: plan.name,
+      roi: plan.roi,
+      days: plan.days,
+      date: new Date().toLocaleString(),
+      dailyIncome: ((amount * plan.roi) / plan.days).toFixed(0),
+      totalIncome: (amount + amount * plan.roi).toFixed(0)
+    });
+    localStorage.setItem("investments", JSON.stringify(investments));
+
+    updateBalanceDisplay();
+    amountInput.value = "";
+
+    messageBox.style.display = "block";
+    messageBox.textContent = `Umewekeza TZS ${amount.toLocaleString()} kwenye mpango wa ${plan.name}.
+Daily Income: TZS ${((amount * plan.roi) / plan.days).toFixed(0)}
+Jumla ya mapato baada ya siku ${plan.days}: TZS ${(amount + amount * plan.roi).toFixed(0)}.`;
+
+    setTimeout(() => {
+      messageBox.style.display = "none";
+    }, 8000);
+  }
+</script>
+
 </body>
 </html>
