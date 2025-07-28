@@ -1,225 +1,74 @@
-<!DOCTYPE html>
-<html lang="sw">
+<!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Admin - Simamia Watumiaji</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel - Manage Users</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f4f4;
-      padding: 20px;
-      margin: 0;
-    }
-
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    h2 {
-      text-align: center;
-      color: #007bff;
-      margin-bottom: 10px;
-      font-size: 2rem;
-      font-weight: bold;
-    }
-
-    /* Search input after heading */
-    .search-container {
-      text-align: right;
-      margin-bottom: 20px;
-    }
-
-    .search-container input {
-      width: 60%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin-right: 8px;
-    }
-
-    .search-container button {
-      padding: 10px 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    input, button, select {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    .user-card {
-      background: white;
-      padding: 15px;
-      border-left: 5px solid #28a745;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-
-    .user-card span {
-      display: block;
-      font-size: 0.95em;
-    }
-
-    .danger {
-      background-color: #dc3545;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    h1 { color: #333; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 10px; border: 1px solid #ccc; text-align: left; font-size: 14px; }
+    button { background: red; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 5px; }
+    button:hover { background: darkred; }
+    .history { font-size: 12px; color: #666; }
   </style>
 </head>
-<body>
+<body>  <h1>Admin Panel - Watumiaji Wote</h1>
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>Jina</th>
+        <th>Simu</th>
+        <th>Aliyemualika</th>
+        <th>Referrals</th>
+        <th>Kiasi (Tsh)</th>
+        <th>Deposit</th>
+        <th>Withdrawals</th>
+        <th>Futa</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>  <script>
+    function loadUsers() {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const tbody = document.querySelector("#usersTable tbody");
+      tbody.innerHTML = "";
 
-  <div class="container">
+      users.forEach((user) => {
+        const tr = document.createElement("tr");
+        const withdrawals = (user.withdrawals || []).join(", ") || "-";
 
-    <h2>Simamia Watumiaji na Salio</h2>
-
-    <div class="search-container">
-      <input type="text" id="searchPhone" placeholder="Tafuta namba ya mtumiaji...">
-      <button onclick="searchUser()">Tafuta</button>
-    </div>
-
-    <input type="text" id="name" placeholder="Jina la Mtumiaji">
-    <input type="text" id="phone" placeholder="Namba ya Simu">
-    <input type="number" id="balance" placeholder="Kiasi cha Mwanzo (Tsh)">
-    <button onclick="addUser()">Ongeza Mtumiaji</button>
-
-    <hr style="margin: 30px 0;">
-
-    <h3>Watumiaji Wote</h3>
-    <div id="userList"></div>
-  </div>
-
-  <script>
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    const withdrawals = JSON.parse(localStorage.getItem("withdrawals")) || [];
-    const deposits = JSON.parse(localStorage.getItem("paymentConfirmations")) || [];
-
-    function addUser() {
-      const name = document.getElementById("name").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const balance = parseFloat(document.getElementById("balance").value.trim());
-
-      if (!name || !phone || isNaN(balance)) {
-        alert("Tafadhali jaza taarifa zote vizuri.");
-        return;
-      }
-
-      const existing = users.find(u => u.phone === phone);
-      if (existing) {
-        alert("Mtumiaji tayari yupo.");
-        return;
-      }
-
-      const user = { name, phone, balance };
-      users.push(user);
-      localStorage.setItem("users", JSON.stringify(users));
-      alert("Mtumiaji ameongezwa.");
-      displayUsers();
-      document.getElementById("name").value = "";
-      document.getElementById("phone").value = "";
-      document.getElementById("balance").value = "";
-    }
-
-    function getTotalWithdraw(phone) {
-      return withdrawals
-        .filter(w => w.phone === phone && w.status === "approved")
-        .reduce((sum, w) => sum + Number(w.amount), 0);
-    }
-
-    function getTotalDeposit(phone) {
-      return deposits
-        .filter(d => d.phoneNumber === phone && d.status === "Approved")
-        .reduce((sum, d) => sum + Number(d.amount), 0);
-    }
-
-    function displayUsers(filteredUsers = null) {
-      const list = document.getElementById("userList");
-      list.innerHTML = "";
-
-      let displayList = filteredUsers || users;
-
-      if (displayList.length === 0) {
-        list.innerHTML = "<p>Hakuna watumiaji bado.</p>";
-        return;
-      }
-
-      displayList.forEach((user, index) => {
-        const totalWithdraw = getTotalWithdraw(user.phone);
-        const totalDeposit = getTotalDeposit(user.phone);
-
-        const card = document.createElement("div");
-        card.className = "user-card";
-        card.innerHTML = `
-          <strong>${user.name}</strong>
-          <span>📞 ${user.phone}</span>
-          <span>💰 Salio: <b>${user.balance.toLocaleString()} Tsh</b></span>
-          <span>⬆️ Jumla ya Deposit: <b>${totalDeposit.toLocaleString()} Tsh</b></span>
-          <span>⬇️ Jumla ya Withdraw: <b>${totalWithdraw.toLocaleString()} Tsh</b></span>
-          <input type="number" id="amount-${index}" placeholder="Weka kiasi">
-          <button onclick="changeBalance(${index}, 'add')">Ongeza</button>
-          <button onclick="changeBalance(${index}, 'subtract')">Punguza</button>
-          <button class="danger" onclick="deleteUser(${index})">Futa Mtumiaji</button>
+        tr.innerHTML = `
+          <td>${user.name}</td>
+          <td>${user.phone}</td>
+          <td>${user.referredBy || "-"}</td>
+          <td>${(user.referrals || []).join(", ") || "-"}</td>
+          <td>${user.deposit || 0}</td>
+          <td>${user.totalDeposit || 0}</td>
+          <td class="history">${withdrawals}</td>
+          <td><button onclick="deleteUser('${user.phone}')">Futa</button></td>
         `;
-        list.appendChild(card);
+        tbody.appendChild(tr);
       });
     }
 
-    function changeBalance(index, type) {
-      const input = document.getElementById(`amount-${index}`);
-      const amount = parseFloat(input.value.trim());
-      if (isNaN(amount)) {
-        alert("Weka kiasi sahihi.");
-        return;
-      }
+    function deleteUser(phone) {
+      if (!confirm("Una uhakika unataka kufuta user huyu?")) return;
 
-      if (type === "add") {
-        users[index].balance += amount;
-      } else {
-        if (users[index].balance < amount) {
-          alert("Salio halitoshi.");
-          return;
+      let users = JSON.parse(localStorage.getItem("users")) || [];
+      users = users.filter(u => u.phone !== phone);
+
+      // Ondoa referral kwenye wengine
+      users.forEach(u => {
+        if (u.referrals && u.referrals.includes(phone)) {
+          u.referrals = u.referrals.filter(p => p !== phone);
         }
-        users[index].balance -= amount;
-      }
+      });
 
       localStorage.setItem("users", JSON.stringify(users));
-      displayUsers();
+      loadUsers();
     }
 
-    function deleteUser(index) {
-      const confirmDelete = confirm("Una uhakika unataka kufuta mtumiaji huyu?");
-      if (!confirmDelete) return;
-      users.splice(index, 1);
-      localStorage.setItem("users", JSON.stringify(users));
-      displayUsers();
-    }
-
-    function searchUser() {
-      const phone = document.getElementById("searchPhone").value.trim();
-      if (!phone) {
-        displayUsers();
-        return;
-      }
-      const filtered = users.filter(u => u.phone.includes(phone));
-      displayUsers(filtered);
-    }
-
-    displayUsers();
-  </script>
-
-</body>
+    loadUsers();
+  </script></body>
 </html>
