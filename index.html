@@ -6,10 +6,7 @@
   <title>Real Investment - Login / Sign Up</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* CSS yako kutoka awali, ni kama ulivyokuwa */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -51,7 +48,6 @@
       outline: none;
     }
     #promoBanner {
-      background: #43cea2;
       background: linear-gradient(90deg, #43cea2 0%, #185a9d 100%);
       color: #fff;
       border-radius: 15px;
@@ -184,6 +180,9 @@
       <div class="input-group hidden" id="referralField">
         <input type="text" id="referralPhone" placeholder="Namba ya Simu ya Aliyekualika (optional)" autocomplete="tel" />
       </div>
+      <div class="input-group hidden" id="emailField">
+        <input type="email" id="email" placeholder="Barua Pepe" autocomplete="email" />
+      </div>
       <div class="input-group">
         <input type="text" id="phone" placeholder="Namba ya Simu" autocomplete="tel" required />
       </div>
@@ -192,7 +191,15 @@
       </div>
       <button type="submit" class="btn" id="submitBtn">Ingia</button>
     </form>
+    
     <div class="toggle" onclick="toggleForm()">Hauna akaunti? Jisajili hapa</div>
+    <div class="toggle" onclick="showForgotPassword()">Umesahau Nenosiri?</div>
+
+    <div id="forgotPasswordModal" class="hidden" style="margin-top: 20px; text-align:center;">
+      <h3 id="forgotPasswordTitle">Umesahau Nenosiri?</h3>
+      <input type="text" id="forgotPhone" placeholder="Ingiza namba ya simu" style="margin-bottom:10px;padding:10px;width:80%;border-radius:10px;border:1px solid #43cea2;" />
+      <button onclick="recoverPassword()" style="padding:10px 20px;border:none;background:#185a9d;color:white;border-radius:10px;cursor:pointer;" id="forgotPasswordBtn">Pata Nenosiri</button>
+    </div>
   </div>
 
   <script>
@@ -209,13 +216,19 @@
         referralPhone: "Namba ya Simu ya Aliyekualika (optional)",
         phone: "Namba ya Simu",
         password: "Nenosiri",
+        email: "Barua Pepe",
         toggleToSignup: "Hauna akaunti? Jisajili hapa",
         toggleToLogin: "Tayari una akaunti? Ingia hapa",
         signupSuccess: "Umejisajili kwa mafanikio!",
         loginSuccess: "Umeingia kwa mafanikio!",
         loginFail: "Namba au nenosiri si sahihi!",
         phoneExists: "Namba hii ya simu tayari imetumika.",
-        enterName: "Tafadhali jaza jina lako kamili."
+        enterName: "Tafadhali jaza jina lako kamili.",
+        forgotPasswordTitle: "Umesahau Nenosiri?",
+        forgotPasswordPlaceholder: "Ingiza namba ya simu",
+        forgotPasswordButton: "Pata Nenosiri",
+        forgotPasswordSuccess: "Asante kwa kuwekeza nasi! Nenosiri litatumwa kwenye barua pepe uliyojisajili nayo ndani ya saa 24 kwa usalama. Endelea kuamini safari yako ya mafanikio!",
+        forgotPasswordNotFound: "Samahani, hatujapata namba ya simu uliyoiingiza. Tafadhali hakikisha umeingiza namba sahihi."
       },
       en: {
         pitch: "Welcome to Real Investment! Join the real platform where every deposit brings new opportunities.",
@@ -226,13 +239,19 @@
         referralPhone: "Referrer's Phone Number (optional)",
         phone: "Phone Number",
         password: "Password",
+        email: "Email",
         toggleToSignup: "Don't have an account? Sign up here",
         toggleToLogin: "Already have an account? Login here",
         signupSuccess: "Signed up successfully!",
         loginSuccess: "Logged in successfully!",
         loginFail: "Invalid phone or password!",
         phoneExists: "This phone number is already registered.",
-        enterName: "Please enter your full name."
+        enterName: "Please enter your full name.",
+        forgotPasswordTitle: "Forgot Password?",
+        forgotPasswordPlaceholder: "Enter your phone number",
+        forgotPasswordButton: "Recover Password",
+        forgotPasswordSuccess: "Thank you for investing with us! Your password will be sent to your registered email within 24 hours for security. Keep believing in your success journey!",
+        forgotPasswordNotFound: "Sorry, we couldn't find the phone number you entered. Please make sure it's correct."
       }
     };
 
@@ -244,8 +263,14 @@
       document.getElementById("referralPhone").placeholder = lang.referralPhone;
       document.getElementById("phone").placeholder = lang.phone;
       document.getElementById("password").placeholder = lang.password;
+      document.getElementById("email").placeholder = lang.email;
       document.querySelector(".toggle").innerText = isSignUp ? lang.toggleToLogin : lang.toggleToSignup;
       document.getElementById("promoSubtitle").innerText = lang.promoSubtitle;
+
+      // Forgot password updates
+      document.getElementById("forgotPasswordTitle").innerText = lang.forgotPasswordTitle;
+      document.getElementById("forgotPhone").placeholder = lang.forgotPasswordPlaceholder;
+      document.getElementById("forgotPasswordBtn").innerText = lang.forgotPasswordButton;
     }
 
     function setLanguage(lang) {
@@ -257,6 +282,7 @@
       isSignUp = !isSignUp;
       document.getElementById("nameField").classList.toggle("hidden");
       document.getElementById("referralField").classList.toggle("hidden");
+      document.getElementById("emailField").classList.toggle("hidden");
       updateTexts();
     }
 
@@ -266,10 +292,15 @@
       const phone = document.getElementById("phone").value.trim();
       const password = document.getElementById("password").value.trim();
       const referralPhone = document.getElementById("referralPhone").value.trim();
+      const email = document.getElementById("email").value.trim();
 
       if (isSignUp) {
         if (!name) {
           alert(strings[currentLang].enterName);
+          return;
+        }
+        if (!email) {
+          alert(currentLang === "sw" ? "Tafadhali jaza barua pepe." : "Please enter email.");
           return;
         }
 
@@ -285,6 +316,7 @@
           name,
           phone,
           password,
+          email,
           deposit: 0,
           referralCommission: 0,
           referrals: [],
@@ -319,6 +351,33 @@
         }
       }
     });
+
+    function showForgotPassword() {
+      document.getElementById("forgotPasswordModal").classList.toggle("hidden");
+    }
+
+    function recoverPassword() {
+      const phone = document.getElementById("forgotPhone").value.trim();
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const found = users.find(u => u.phone === phone);
+
+      if (found) {
+        // Hifadhi ombi la password recovery kwenye localStorage kwa admin kuona
+        const requests = JSON.parse(localStorage.getItem("passwordRequests")) || [];
+        requests.push({
+          name: found.name,
+          phone: found.phone,
+          email: found.email,
+          password: found.password,
+          requestedAt: Date.now()
+        });
+        localStorage.setItem("passwordRequests", JSON.stringify(requests));
+        
+        alert(strings[currentLang].forgotPasswordSuccess);
+      } else {
+        alert(strings[currentLang].forgotPasswordNotFound);
+      }
+    }
 
     window.onload = () => {
       updateTexts();
